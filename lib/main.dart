@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:async';
-
 import 'package:flutter/services.dart';
 
 void main() {
@@ -35,9 +34,12 @@ class _MyHomePageState extends State<MyHomePage> {
   late Timer setTimer;
   int clockDown = 0;
   late String frequencySelected;
+  TimeOfDay startTime = TimeOfDay.now();
+  TimeOfDay endTime = TimeOfDay.now();
 
   TextEditingController setNumber = TextEditingController();
   TextEditingController taskName = TextEditingController();
+  TextEditingController taskNotes = TextEditingController();
 
   //Format Duration
   String formatDuration(Duration duration) {
@@ -54,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
       if (clockDown == 0) {
         setState(() {
           _audioCache.play('alarmSound.mp3');
-          timer.cancel();
+          // timer.cancel();
         });
       } else {
         setState(() {
@@ -220,272 +222,219 @@ class _MyHomePageState extends State<MyHomePage> {
                                   topRight: Radius.circular(20.0))),
                           backgroundColor: Colors.grey[850],
                           builder: (BuildContext context) {
-                            return Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                const Padding(
-                                  padding:
-                                      EdgeInsets.only(left: 20.0, top: 20.0),
-                                  child: Text(
-                                    'Create Task',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 24.0,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                      left: 20.0, right: 20.0, top: 20.0),
-                                  // padding: const EdgeInsets.only(left: 10.0),
-                                  child: TextField(
-                                    controller: taskName,
-                                    decoration: InputDecoration(
-                                      hintText: "Task Name",
-                                      filled: true,
-                                      isDense: true,
-                                      fillColor: Colors.grey[800],
-                                      hintStyle:
-                                          const TextStyle(color: Colors.grey),
-
-                                      border: const OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10.0))),
-                                      enabledBorder: const OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.grey, width: 1.0),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10.0))),
-                                      // focusedBorder: OutlineInputBorder(
-                                      //     borderSide: BorderSide(
-                                      //         color: Colors.grey, width: 1.0),
-                                      //     borderRadius: BorderRadius.all(
-                                      //         Radius.circular(10.0))),
-                                    ),
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                      left: 20.0, right: 20.0, top: 15.0),
-                                  // padding: const EdgeInsets.only(left: 10.0),
-                                  child: TextField(
-                                    controller: taskName,
-                                    maxLines: 8,
-                                    decoration: InputDecoration(
-                                      hintText: "Notes",
-                                      filled: true,
-                                      isDense: true,
-                                      fillColor: Colors.grey[800],
-                                      hintStyle:
-                                          const TextStyle(color: Colors.grey),
-
-                                      border: const OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10.0))),
-                                      enabledBorder: const OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.grey, width: 1.0),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10.0))),
-                                      // focusedBorder: OutlineInputBorder(
-                                      //     borderSide: BorderSide(
-                                      //         color: Colors.grey, width: 1.0),
-                                      //     borderRadius: BorderRadius.all(
-                                      //         Radius.circular(10.0))),
-                                    ),
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                Row(
+                            return GestureDetector(
+                                onTap: () {
+                                  print('test');
+                                  FocusScope.of(context).unfocus();
+                                },
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
                                   children: <Widget>[
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          print('Open Date Picker');
-                                        },
-                                        child: Container(
-                                          height: 55,
-                                          margin: const EdgeInsets.only(
-                                              top: 15.0, left: 20.0),
-                                          decoration: BoxDecoration(
-                                            color: Colors.blueGrey[800],
-                                            border: Border.all(
-                                                color: Colors.blueGrey,
-                                                width: 1.0),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                              Radius.circular(20.0),
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: const <Widget>[
-                                              Icon(
-                                                Icons.watch_later_rounded,
-                                                color: Colors.white,
-                                                size: 18.0,
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    EdgeInsets.only(left: 5.0),
-                                                child: Text(
-                                                  'Select Time',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 16.0,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
+                                    const Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 20.0, top: 20.0),
+                                      child: Text(
+                                        'Create Task',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 24.0,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
-                                    const SizedBox(
-                                      width: 10.0,
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                          left: 20.0, right: 20.0, top: 15.0),
+                                      // padding: const EdgeInsets.only(left: 10.0),
+                                      child: TextField(
+                                        controller: taskName,
+                                        decoration: InputDecoration(
+                                          hintText: "Task Name",
+                                          filled: true,
+                                          isDense: true,
+                                          fillColor: Colors.grey[800],
+                                          hintStyle: const TextStyle(
+                                              color: Colors.grey),
+
+                                          border: const OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0))),
+                                          enabledBorder:
+                                              const OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1.0),
+                                                  borderRadius:
+                                                      BorderRadius.all(Radius
+                                                          .circular(10.0))),
+                                          // focusedBorder: OutlineInputBorder(
+                                          //     borderSide: BorderSide(
+                                          //         color: Colors.grey, width: 1.0),
+                                          //     borderRadius: BorderRadius.all(
+                                          //         Radius.circular(10.0))),
+                                        ),
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
                                     ),
-                                    Expanded(
-                                        child: GestureDetector(
-                                            onTap: () {
-                                              showModalBottomSheet(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return Container(
-                                                      height: 200.0,
-                                                      // decoration: ShapeDecoration(
-                                                      //     shape: const RoundedRectangleBorder(
-                                                      //         borderRadius: BorderRadius.only(
-                                                      //             topLeft: Radius.circular(20.0),
-                                                      //             topRight: Radius.circular(20.0)))),
-                                                      child: CupertinoPicker(
-                                                        backgroundColor:
-                                                            Colors.grey[800],
-                                                        itemExtent: 60.0,
-                                                        scrollController:
-                                                            FixedExtentScrollController(
-                                                                initialItem: 0),
-                                                        children: <Widget>[
-                                                          Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            children: const <
-                                                                Widget>[
-                                                              Text(
-                                                                'Weekly',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            children: const <
-                                                                Widget>[
-                                                              Text(
-                                                                'Bi-Weekly',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            children: const <
-                                                                Widget>[
-                                                              Text(
-                                                                'Monthly',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            children: const <
-                                                                Widget>[
-                                                              Text(
-                                                                'Yearly',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                        onSelectedItemChanged:
-                                                            (value) {
-                                                          setState(() {
-                                                            switch (value) {
-                                                              case 0:
-                                                                setState(() {
-                                                                  frequencySelected =
-                                                                      'Weekly';
-                                                                });
-                                                                break;
-                                                              case 1:
-                                                                setState(() {
-                                                                  frequencySelected =
-                                                                      'Bi-Weekly';
-                                                                });
-                                                                break;
-                                                              case 2:
-                                                                setState(() {
-                                                                  frequencySelected =
-                                                                      'Monthly';
-                                                                });
-                                                                break;
-                                                              case 3:
-                                                                setState(() {
-                                                                  frequencySelected =
-                                                                      'Yearly';
-                                                                });
-                                                                break;
-                                                              default:
-                                                                break;
-                                                            }
-                                                          });
-                                                        },
-                                                      ),
-                                                    );
-                                                  }).whenComplete(() => {
-                                                    print(frequencySelected),
-                                                    // setState(() {
-                                                    //   frequencySelected = '';
-                                                    // })
-                                                  });
-                                            },
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                          left: 20.0, right: 20.0, top: 15.0),
+                                      // padding: const EdgeInsets.only(left: 10.0),
+                                      child: TextField(
+                                        controller: taskNotes,
+                                        maxLines: 6,
+                                        decoration: InputDecoration(
+                                          hintText: "Notes",
+                                          filled: true,
+                                          isDense: true,
+                                          fillColor: Colors.grey[800],
+                                          hintStyle: const TextStyle(
+                                              color: Colors.grey),
+
+                                          border: const OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0))),
+                                          enabledBorder:
+                                              const OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1.0),
+                                                  borderRadius:
+                                                      BorderRadius.all(Radius
+                                                          .circular(10.0))),
+                                          // focusedBorder: OutlineInputBorder(
+                                          //     borderSide: BorderSide(
+                                          //         color: Colors.grey, width: 1.0),
+                                          //     borderRadius: BorderRadius.all(
+                                          //         Radius.circular(10.0))),
+                                        ),
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14.0),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 15.0),
+                                    Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                            child: GestureDetector(
+                                          onTap: () async {
+                                            final selectedTime =
+                                                await showTimePicker(
+                                                    context: context,
+                                                    helpText:
+                                                        'Enter Start Time',
+                                                    initialTime: startTime,
+                                                    initialEntryMode:
+                                                        TimePickerEntryMode
+                                                            .input);
+
+                                            if (selectedTime != null) {
+                                              setState(() {
+                                                startTime = selectedTime;
+
+                                                print(
+                                                    startTime.format(context));
+                                              });
+                                            }
+                                          },
+                                          child: Container(
+                                            height: 40.0,
+                                            margin: const EdgeInsets.only(
+                                                left: 20.0),
+                                            decoration: BoxDecoration(
+                                                color: Colors.blue[300],
+                                                border: Border.all(
+                                                    color: Colors.blue,
+                                                    width: 1.0),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(15.0))),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: const <Widget>[
+                                                Text('Start Time',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 14.0,
+                                                        fontWeight:
+                                                            FontWeight.bold))
+                                              ],
+                                            ),
+                                          ),
+                                        )),
+                                        const SizedBox(width: 10.0),
+                                        Expanded(
+                                            child: GestureDetector(
+                                          onTap: () async {
+                                            final selectedTime =
+                                                await showTimePicker(
+                                                    context: context,
+                                                    helpText: 'Enter End Time',
+                                                    initialTime: endTime,
+                                                    initialEntryMode:
+                                                        TimePickerEntryMode
+                                                            .input);
+
+                                            if (selectedTime != null) {
+                                              setState(() {
+                                                endTime = selectedTime;
+
+                                                print(endTime.format(context));
+                                              });
+                                            }
+                                          },
+                                          child: Container(
+                                            height: 40.0,
+                                            margin: const EdgeInsets.only(
+                                                right: 20.0),
+                                            decoration: BoxDecoration(
+                                                color: Colors.blue[300],
+                                                border: Border.all(
+                                                    color: Colors.blue,
+                                                    width: 1.0),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(15.0))),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: const <Widget>[
+                                                Icon(
+                                                  Icons.not_interested_rounded,
+                                                  color: Colors.white,
+                                                  size: 16.0,
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 5.0),
+                                                  child: Text('End Time',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 14.0,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ))
+                                      ],
+                                    ),
+                                    Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap: () async {},
                                             child: Container(
                                               height: 55,
                                               margin: const EdgeInsets.only(
-                                                  top: 15.0, right: 20.0),
+                                                  top: 15.0, left: 20.0),
                                               decoration: BoxDecoration(
                                                 color: Colors.blueGrey[800],
                                                 border: Border.all(
@@ -503,14 +452,16 @@ class _MyHomePageState extends State<MyHomePage> {
                                                     CrossAxisAlignment.center,
                                                 children: const <Widget>[
                                                   Icon(
-                                                      Icons
-                                                          .calendar_today_rounded,
-                                                      color: Colors.white),
+                                                    Icons
+                                                        .calendar_today_rounded,
+                                                    color: Colors.white,
+                                                    size: 18.0,
+                                                  ),
                                                   Padding(
                                                     padding: EdgeInsets.only(
                                                         left: 5.0),
                                                     child: Text(
-                                                      'Frequency',
+                                                      'Select Date',
                                                       style: TextStyle(
                                                           color: Colors.white,
                                                           fontSize: 16.0,
@@ -520,46 +471,238 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   )
                                                 ],
                                               ),
-                                            )))
-                                  ],
-                                ),
-                                const Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Container(
-                                    width: 200.0,
-                                    height: 40.0,
-                                    margin: const EdgeInsets.only(bottom: 30.0),
-                                    decoration: BoxDecoration(
-                                        color: Colors.deepPurple[300],
-                                        border: Border.all(
-                                            color: Colors.deepPurple,
-                                            width: 1.0),
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(10.0))),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: const <Widget>[
-                                        Icon(
-                                          Icons.create,
-                                          color: Colors.white,
-                                          size: 18.0,
+                                            ),
+                                          ),
                                         ),
-                                        SizedBox(width: 5.0),
-                                        Text(
-                                          'Create Task',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.bold),
+                                        const SizedBox(
+                                          width: 10.0,
                                         ),
+                                        Expanded(
+                                            child: GestureDetector(
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return Container(
+                                                          height: 150.0,
+                                                          // decoration: ShapeDecoration(
+                                                          //     shape: const RoundedRectangleBorder(
+                                                          //         borderRadius: BorderRadius.only(
+                                                          //             topLeft: Radius.circular(20.0),
+                                                          //             topRight: Radius.circular(20.0)))),
+                                                          child:
+                                                              CupertinoPicker(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .grey[800],
+                                                            itemExtent: 60.0,
+                                                            scrollController:
+                                                                FixedExtentScrollController(
+                                                                    initialItem:
+                                                                        0),
+                                                            children: <Widget>[
+                                                              Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .center,
+                                                                children: const <
+                                                                    Widget>[
+                                                                  Text(
+                                                                    'Weekly',
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .center,
+                                                                children: const <
+                                                                    Widget>[
+                                                                  Text(
+                                                                    'Bi-Weekly',
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .center,
+                                                                children: const <
+                                                                    Widget>[
+                                                                  Text(
+                                                                    'Monthly',
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .center,
+                                                                children: const <
+                                                                    Widget>[
+                                                                  Text(
+                                                                    'Yearly',
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                            onSelectedItemChanged:
+                                                                (value) {
+                                                              setState(() {
+                                                                switch (value) {
+                                                                  case 0:
+                                                                    setState(
+                                                                        () {
+                                                                      frequencySelected =
+                                                                          'Weekly';
+                                                                    });
+                                                                    break;
+                                                                  case 1:
+                                                                    setState(
+                                                                        () {
+                                                                      frequencySelected =
+                                                                          'Bi-Weekly';
+                                                                    });
+                                                                    break;
+                                                                  case 2:
+                                                                    setState(
+                                                                        () {
+                                                                      frequencySelected =
+                                                                          'Monthly';
+                                                                    });
+                                                                    break;
+                                                                  case 3:
+                                                                    setState(
+                                                                        () {
+                                                                      frequencySelected =
+                                                                          'Yearly';
+                                                                    });
+                                                                    break;
+                                                                  default:
+                                                                    break;
+                                                                }
+                                                              });
+                                                            },
+                                                          ),
+                                                        );
+                                                      }).whenComplete(() => {
+                                                        print(
+                                                            frequencySelected),
+                                                        // setState(() {
+                                                        //   frequencySelected = '';
+                                                        // })
+                                                      });
+                                                },
+                                                child: Container(
+                                                  height: 55,
+                                                  margin: const EdgeInsets.only(
+                                                      top: 15.0, right: 20.0),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.blueGrey[800],
+                                                    border: Border.all(
+                                                        color: Colors.blueGrey,
+                                                        width: 1.0),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                      Radius.circular(20.0),
+                                                    ),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: const <Widget>[
+                                                      Icon(
+                                                          Icons
+                                                              .access_alarm_rounded,
+                                                          color: Colors.white),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 5.0),
+                                                        child: Text(
+                                                          'Frequency',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 16.0,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                )))
                                       ],
-                                    ))
-                              ],
-                            );
+                                    ),
+                                    const Expanded(
+                                      child: SizedBox(),
+                                    ),
+                                    Container(
+                                        width: 200.0,
+                                        height: 40.0,
+                                        margin:
+                                            const EdgeInsets.only(bottom: 30.0),
+                                        decoration: BoxDecoration(
+                                            color: Colors.deepPurple[300],
+                                            border: Border.all(
+                                                color: Colors.deepPurple,
+                                                width: 1.0),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10.0))),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: const <Widget>[
+                                            Icon(
+                                              Icons.create,
+                                              color: Colors.white,
+                                              size: 18.0,
+                                            ),
+                                            SizedBox(width: 5.0),
+                                            Text(
+                                              'Create Task',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16.0,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ))
+                                  ],
+                                ));
                           });
                     },
                     child: Container(
@@ -742,7 +885,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           ],
                                         ),
                                         const SizedBox(
-                                          height: 10.0,
+                                          height: 20.0,
                                         ),
                                         Row(
                                           mainAxisAlignment:
@@ -751,7 +894,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                               CrossAxisAlignment.center,
                                           children: <Widget>[
                                             Container(
-                                                height: 60.0,
+                                                height: 50.0,
                                                 width: 200.0,
                                                 margin: const EdgeInsets.only(
                                                     right: 10.0),
@@ -782,8 +925,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   ],
                                                 )),
                                             Container(
-                                              height: 60.0,
-                                              width: 60.0,
+                                              height: 50.0,
+                                              width: 50.0,
                                               decoration: BoxDecoration(
                                                 color: Colors.green[300],
                                                 shape: BoxShape.circle,
@@ -799,8 +942,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                             ),
                                             const SizedBox(width: 10.0),
                                             Container(
-                                                height: 60.0,
-                                                width: 60.0,
+                                                height: 50.0,
+                                                width: 50.0,
                                                 decoration: BoxDecoration(
                                                   color: Colors.red[300],
                                                   shape: BoxShape.circle,
@@ -845,68 +988,102 @@ class _MyHomePageState extends State<MyHomePage> {
                                       color: Colors.blueGrey, width: 1.0),
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(10.0))),
-                              child: Column(
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Row(
-                                    children: const <Widget>[
-                                      Icon(Icons.checklist_rounded,
-                                          color: Colors.white),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Row(
+                                        children: const <Widget>[
+                                          Icon(Icons.checklist_rounded,
+                                              color: Colors.white),
+                                          Padding(
+                                            padding: EdgeInsets.only(left: 5.0),
+                                            child: Text(
+                                              'Walk The Puppies',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                       Padding(
-                                        padding: EdgeInsets.only(left: 5.0),
-                                        child: Text(
-                                          'Walk The Puppies',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.bold),
+                                        padding:
+                                            const EdgeInsets.only(top: 5.0),
+                                        child: Row(
+                                          children: const <Widget>[
+                                            Icon(
+                                              Icons.access_time,
+                                              color: Colors.grey,
+                                              size: 14.0,
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 5.0),
+                                              child: Text(
+                                                '8:00AM - 10:00AM',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12.0),
+                                              ),
+                                            )
+                                          ],
                                         ),
-                                      )
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 5.0),
+                                        child: Row(
+                                          children: const <Widget>[
+                                            Icon(
+                                              Icons.calendar_today_rounded,
+                                              color: Colors.grey,
+                                              size: 14.0,
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 5.0),
+                                              child: Text(
+                                                'January 28th, 2022',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12.0),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 5.0),
-                                    child: Row(
-                                      children: const <Widget>[
-                                        Icon(
-                                          Icons.access_time,
-                                          color: Colors.grey,
-                                          size: 14.0,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 5.0),
-                                          child: Text(
-                                            '8:00AM - 10:00AM',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12.0),
-                                          ),
-                                        )
-                                      ],
-                                    ),
+                                  const Expanded(
+                                    child: SizedBox(),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 5.0),
-                                    child: Row(
-                                      children: const <Widget>[
-                                        Icon(
-                                          Icons.calendar_today_rounded,
-                                          color: Colors.grey,
-                                          size: 14.0,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 5.0),
+                                  Column(
+                                    children: <Widget>[
+                                      GestureDetector(
+                                        onTap: () {
+                                          print('Clear');
+                                        },
+                                        child: const Padding(
+                                          padding: EdgeInsets.only(
+                                              top: 10.0, right: 10.0),
                                           child: Text(
-                                            'January 28th, 2022',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12.0),
+                                            'Clear',
+                                            style: TextStyle(color: Colors.red),
                                           ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
+                                        ),
+                                      ),
+                                      const Expanded(
+                                        child: SizedBox(),
+                                      )
+                                    ],
+                                  )
                                 ],
                               ),
                             ),
